@@ -12,8 +12,45 @@ const bricolageGrotesque = Bricolage_Grotesque({
 });
 
 export const metadata: Metadata = {
-  title: "GeebDev Space",
-  description: "Personal Web Portfolio of GeebDev Space (Gibran Ramadhan)",
+  metadataBase: new URL("https://www.geebdev.my.id"),
+
+  title: {
+    default: "GeebDev Space",
+    template: "%s | GeebDev Space",
+  },
+
+  description:
+    "Explore the official portfolio of M Gibran (GeebDev Space). Full Stack Developer specializing in modern web applications, scalable software, and high-performance user experiences.",
+
+  keywords: [
+    "Geeb Dev Space",
+    "Web Developer",
+    "Next.js Developer",
+    "Frontend Developer",
+    "Full Stack Developer",
+    "Web Development Portfolio",
+  ],
+  authors: [{ name: "Geeb Dev Space" }],
+  alternates: {
+    canonical: "/",
+  },
+
+  openGraph: {
+    title: "GeebDev Space | Web Developer & Portfolio",
+    description:
+      "Explore the official portfolio of M Gibran (GeebDev Space). Full Stack Developer specializing in modern web applications, scalable software, and high-performance user experiences.",
+    url: "https://www.geebdev.my.id",
+    siteName: "Geeb Dev Space",
+    locale: "id_ID",
+    type: "website",
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "Geeb Dev Space | Web Developer & Portfolio",
+    description:
+      "Explore the official portfolio of M Gibran (GeebDev Space). Full Stack Developer specializing in modern web applications, scalable software, and high-performance user experiences.",
+  },
 };
 
 export default function RootLayout({

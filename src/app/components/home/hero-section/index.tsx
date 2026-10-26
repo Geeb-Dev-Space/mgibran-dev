@@ -8,7 +8,7 @@ const index = () => {
           <div className="flex flex-col gap-4 md:gap-7 max-w-2xl">
             <div>
               <div className="flex items-center gap-8">
-                <h1>I'm Gibran</h1>
+                <h1>I&apos;m Gibran</h1>
                 <div className="wave">
                   <Image
                     src={"/images/home/banner/wave-icon.svg"}

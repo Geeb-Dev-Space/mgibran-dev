@@ -1,5 +1,4 @@
 import Logo from "../logo";
-import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -14,8 +13,7 @@ const Footer = () => {
             <div className="grow h-px bg-black" />
           </div>
           <p className="text-muted-foreground">
-            2026 © GeebDev Space{" "}
-            - All rights reserved.
+            2026 © GeebDev Space - All rights reserved.
           </p>
         </div>
       </div>

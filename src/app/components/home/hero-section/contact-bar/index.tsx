@@ -3,18 +3,38 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+interface ContactItem {
+  link: string;
+  icon: string;
+  type: string;
+  label: string;
+}
+
+interface SocialItem {
+  link: string;
+  icon: string;
+  platform: string;
+}
+
+interface ContactBarData {
+  contactItems?: ContactItem[];
+  socialItems?: SocialItem[];
+}
+
 const ContactBar = () => {
-  const [contactBarData, setContactBarData] = useState<any>(null);
+  const [contactBarData, setContactBarData] = useState<ContactBarData | null>(
+    null,
+  );
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await fetch("/api/page-data");
         if (!res.ok) throw new Error("Failed to fetch");
-        const data = await res.json();
-        setContactBarData(data?.contactBar);
+        const data: { contactBar?: ContactBarData } = await res.json();
+        setContactBarData(data.contactBar ?? null);
       } catch (error) {
-        console.error("Error fetching services:", error);
+        console.error("Error fetching contact bar data:", error);
       }
     };
 
@@ -28,36 +48,34 @@ const ContactBar = () => {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-6 md:py-7">
             {/* Contact Items */}
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-1.5 md:gap-5 lg:gap-11">
-              {contactBarData?.contactItems?.map(
-                (value: any, index: number) => (
-                  <Link
-                    key={index}
-                    href={value?.link}
-                    className="flex items-center gap-2 lg:gap-4 text-sm md:text-base"
-                  >
-                    <Image
-                      src={value?.icon}
-                      alt={value?.type}
-                      width={24}
-                      height={24}
-                      className="min-w-[24px] min-h-[24px]"
-                    />
+              {contactBarData?.contactItems?.map((value, index) => (
+                <Link
+                  key={index}
+                  href={value.link}
+                  className="flex items-center gap-2 lg:gap-4 text-sm md:text-base"
+                >
+                  <Image
+                    src={value.icon}
+                    alt={value.type}
+                    width={24}
+                    height={24}
+                    className="min-w-[24px] min-h-[24px]"
+                  />
 
-                    <h6 className="text-sm md:text-base xl:text-xl hover:text-primary">
-                      {value?.label}
-                    </h6>
-                  </Link>
-                ),
-              )}
+                  <h6 className="text-sm md:text-base xl:text-xl hover:text-primary">
+                    {value.label}
+                  </h6>
+                </Link>
+              ))}
             </div>
 
             {/* Social Items */}
             <div className="flex items-center justify-center md:justify-end gap-4 md:gap-2.5">
-              {contactBarData?.socialItems?.map((value: any, index: number) => (
-                <Link key={index} href={value?.link}>
+              {contactBarData?.socialItems?.map((value, index) => (
+                <Link key={index} href={value.link}>
                   <Image
-                    src={value?.icon}
-                    alt={value?.platform}
+                    src={value.icon}
+                    alt={value.platform}
                     width={35}
                     height={35}
                     className="hover:opacity-80"

@@ -5,64 +5,137 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ChangeEvent } from "react";
 
+// Types
+interface FormData {
+  name: string;
+  number: string;
+  email: string;
+  message: string;
+}
+interface SocialLink {
+  title: string;
+  href: string;
+}
+interface ContactInfo {
+  label: string;
+  link: string;
+}
+interface ContactData {
+  socialLinks: SocialLink[];
+  contactInfo: ContactInfo[];
+}
+interface PageDataResponse {
+  contactLinks?: ContactData;
+}
+interface FormSubmitResponse {
+  success: string | boolean;
+  message?: string;
+}
+
+const initialFormData: FormData = {
+  name: "",
+  number: "",
+  email: "",
+  message: "",
+};
 const Contact = () => {
-  const [contactData, setContactData] = useState<any>(null);
+  const [contactData, setContactData] = useState<ContactData | null>(null);
   const [submitted, setSubmitted] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    number: "",
-    email: "",
-    message: "",
-  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const [formData, setFormData] = useState<FormData>(initialFormData);
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchData = async () => {
       try {
-        const res = await fetch("/api/page-data");
-        if (!res.ok) throw new Error("Failed to fetch");
-        const data = await res.json();
-        setContactData(data?.contactLinks);
+        const res = await fetch("/api/page-data", {
+          signal: controller.signal,
+        });
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch contact data");
+        }
+
+        const data: PageDataResponse = await res.json();
+
+        setContactData(data.contactLinks ?? null);
       } catch (error) {
-        console.error("Error fetching services:", error);
+        if (error instanceof Error && error.name === "AbortError") {
+          return;
+        }
+
+        console.error("Error fetching contact data:", error);
       }
     };
 
     fetchData();
+
+    return () => controller.abort();
   }, []);
 
   const reset = () => {
-    formData.name = "";
-    formData.number = "";
-    formData.email = "";
-    formData.message = "";
+    setFormData({ ...initialFormData });
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (
+    e: Parameters<NonNullable<React.ComponentProps<"form">["onSubmit"]>>[0],
+  ) => {
     e.preventDefault();
 
-    fetch("https://formsubmit.co/ajax/bhainirav772@gmail.com", {
-      method: "POST",
-      headers: { "Content-type": "application/json" },
-      body: JSON.stringify({
-        name: formData.name,
-        number: formData.number,
-        email: formData.email,
-        message: formData.message,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setSubmitted(data.success);
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    setSubmitted(false);
+    setErrorMessage("");
+
+    try {
+      const response = await fetch(
+        "https://formsubmit.co/ajax/geebdev.space@gmail.com",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to send email");
+      }
+
+      const data: FormSubmitResponse = await response.json();
+
+      if (data.success === true || data.success === "true") {
+        setSubmitted(true);
         reset();
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
+      } else {
+        throw new Error(data.message || "Failed to send email");
+      }
+    } catch (error) {
+      console.error("Error submitting contact form:", error);
+
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Something went wrong. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
-  const handleChange = (e: any) => {
+
+  // Handle input changes
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
     const { name, value } = e.target;
+
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -151,6 +224,11 @@ const Contact = () => {
                     </p>
                   </div>
                 )}
+                {errorMessage && (
+                  <p className="text-destructive" role="alert">
+                    {errorMessage}
+                  </p>
+                )}
                 <Button
                   variant="outline"
                   type="submit"
@@ -164,32 +242,28 @@ const Contact = () => {
             </form>
             <div className="flex flex-col sm:flex-row md:flex-col justify-between gap-5 md:gap-20 items-center md:items-end">
               <div className="flex flex-wrap flex-row md:flex-col items-start md:items-end gap-4 md:gap-6">
-                {contactData?.socialLinks?.map((value: any, index: any) => {
-                  return (
-                    <div key={index}>
-                      <Link
-                        href={value?.href}
-                        className="text-base sm:text-lg font-normal text-muted-foreground hover:text-primary"
-                      >
-                        {value?.title}
-                      </Link>
-                    </div>
-                  );
-                })}
+                {contactData?.socialLinks?.map((value, index) => (
+                  <div key={index}>
+                    <Link
+                      href={value.href}
+                      className="text-base sm:text-lg font-normal text-muted-foreground hover:text-primary"
+                    >
+                      {value.title}
+                    </Link>
+                  </div>
+                ))}
               </div>
               <div className="flex flex-wrap justify-center gap-5 lg:gap-11 items-end">
-                {contactData?.contactInfo?.map((value: any, index: any) => {
-                  return (
-                    <div key={index}>
-                      <Link
-                        href={value?.link}
-                        className="text-base lg:text-lg text-black font-normal border-b border-black pb-3 hover:text-primary hover:border-primary"
-                      >
-                        {value?.label}
-                      </Link>
-                    </div>
-                  );
-                })}
+                {contactData?.contactInfo?.map((value, index) => (
+                  <div key={index}>
+                    <Link
+                      href={value.link}
+                      className="text-base lg:text-lg text-black font-normal border-b border-black pb-3 hover:text-primary hover:border-primary"
+                    >
+                      {value.label}
+                    </Link>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

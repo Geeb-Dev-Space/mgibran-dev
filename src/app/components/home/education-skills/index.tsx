@@ -2,18 +2,34 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
+interface EducationItem {
+  title: string;
+  description: string;
+}
+
+interface SkillItem {
+  name: string;
+  icon: string;
+  rating: number;
+}
+
+interface EducationData {
+  education?: EducationItem[];
+  skills?: SkillItem[];
+}
+
 const EducationSkills = () => {
-  const [educationData, setEductionData] = useState<any>(null);
+  const [educationData, setEductionData] = useState<EducationData | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await fetch("/api/page-data");
         if (!res.ok) throw new Error("Failed to fetch");
-        const data = await res.json();
-        setEductionData(data?.educationData);
+        const data: { educationData?: EducationData } = await res.json();
+        setEductionData(data.educationData ?? null);
       } catch (error) {
-        console.error("Error fetching services:", error);
+        console.error("Error fetching education data:", error);
       }
     };
 
@@ -38,7 +54,7 @@ const EducationSkills = () => {
             </div>
             <div className="flex flex-col lg:flex-row items-center gap-10 xl:gap-20">
               <div className="w-full lg:max-w-md flex flex-col gap-0 xl:gap-8">
-                {educationData?.education?.map((value: any, index: any) => {
+                {educationData?.education?.map((value, index) => {
                   return (
                     <div key={index} className="flex items-start gap-6">
                       <div className="no-print mt-2.5 w-3.5 h-3.5 rounded-full border-1 bg-white flex items-center justify-center border-black">
@@ -53,7 +69,7 @@ const EducationSkills = () => {
                 })}
               </div>
               <div className="grid grid-cols-2 xs:grid-cols-3 gap-5 xl:gap-7 w-full">
-                {educationData?.skills?.map((value: any, index: any) => {
+                {educationData?.skills?.map((value, index) => {
                   return (
                     <div
                       key={index}

@@ -37,10 +37,10 @@ const AboutMe = () => {
                 <p>
                   There are many variations of passages of Lorem Ipsum
                   available, but the majority have suffered alteration in some
-                  form, by injected humour, or randomised words which don't look
-                  even slightly believable. If you are going to use a passage of
-                  Lorem Ipsum, you need to be sure there isn't anything
-                  embarrassing hidden in the middle of text.
+                  form, by injected humour, or randomised words which don&apos;t
+                  look even slightly believable. If you are going to use a
+                  passage of Lorem Ipsum, you need to be sure there isn&apos;t
+                  anything embarrassing hidden in the middle of text.
                 </p>
 
                 <div className="grid grid-cols-3 py-10 xl:py-16 gap-5 border-b border-gray-300">
@@ -69,16 +69,18 @@ const AboutMe = () => {
                     <p className="text-base xl:text-xl text-black">Language</p>
                   </div>
                   <div className="flex flex-wrap justify-center items-center gap-2.5">
-                    {["Indonesian", "English", "Sundanese"].map((lang, index) => (
-                      <Badge
-                        key={index}
-                        className="h-full bg-white rounded-full"
-                      >
-                        <p className="bg-white py-2 md:py-3.5 px-4 md:px-5 text-base xl:text-xl text-muted-foreground">
-                          {lang}
-                        </p>
-                      </Badge>
-                    ))}
+                    {["Indonesian", "English", "Sundanese"].map(
+                      (lang, index) => (
+                        <Badge
+                          key={index}
+                          className="h-full bg-white rounded-full"
+                        >
+                          <p className="bg-white py-2 md:py-3.5 px-4 md:px-5 text-base xl:text-xl text-muted-foreground">
+                            {lang}
+                          </p>
+                        </Badge>
+                      ),
+                    )}
                   </div>
                 </div>
               </div>

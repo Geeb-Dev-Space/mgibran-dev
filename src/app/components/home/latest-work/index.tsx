@@ -4,18 +4,27 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+interface WorkItem {
+  image: string;
+  slug: string;
+  title: string;
+  projectType: string;
+  type: string;
+  client: string;
+}
+
 const LatestWork = () => {
-  const [workData, setWorkData] = useState<any>(null);
+  const [workData, setWorkData] = useState<WorkItem[] | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await fetch("/api/work-data");
         if (!res.ok) throw new Error("Failed to fetch");
-        const data = await res.json();
-        setWorkData(data?.workData);
+        const data: { workData?: WorkItem[] } = await res.json();
+        setWorkData(data.workData ?? null);
       } catch (error) {
-        console.error("Error fetching services:", error);
+        console.error("Error fetching works:", error);
       }
     };
 
@@ -32,7 +41,7 @@ const LatestWork = () => {
               <p className="text-xl text-primary">( 04 )</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-6 xl:gap-y-12">
-              {workData?.map((value: any, index: any) => {
+              {workData?.map((value, index) => {
                 return (
                   <div
                     key={index}

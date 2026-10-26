@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, Home, SearchX } from "lucide-react";
+import { Home } from "lucide-react";
 
 export default function NotFound() {
   return (
@@ -22,8 +22,8 @@ export default function NotFound() {
         </h2>
 
         <p className="mb-8 text-muted-foreground leading-relaxed">
-          The page you're looking for doesn't exist, has been moved, or is
-          temporarily unavailable. Let's get you back on track.
+          The page you&apos;re looking for doesn&apos;t exist, has been moved,
+          or is temporarily unavailable. Let&apos;s get you back on track.
         </p>
 
         {/* Back to Home */}

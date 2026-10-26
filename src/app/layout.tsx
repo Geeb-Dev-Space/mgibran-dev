@@ -3,6 +3,8 @@ import { Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 import Header from "./components/layout/header";
 import Footer from "./components/layout/footer";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 
 const bricolageGrotesque = Bricolage_Grotesque({
   variable: "--font-geist-sans",
@@ -25,6 +27,8 @@ export default function RootLayout({
         <Header />
         {children}
         <Footer />
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
